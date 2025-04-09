@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Terrarium Zero</title>
+    <style>
+        body {
+            /* Use a modern, readable system font stack */
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            background-color: #ffffff; /* White background */
+            color: #000000; /* Black text */
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            font-size: 15px;
+            /* Ensure body takes up height for event listeners if content is short */
+            min-height: 100vh;
+            /* Helps ensure mouse events cover the whole page */
+            position: relative;
+        }
+        .container {
+            max-width: 800px; /* Readable width on larger screens */
+            margin: 20px auto; /* Center content with spacing */
+            padding: 15px 25px; /* Padding inside the container */
+            border-left: 1px solid #cccccc; /* Lighter grey border */
+            border-right: 1px solid #cccccc;
+            position: relative; /* Needed for z-index stacking if spheres go behind */
+            z-index: 1;
+            background-color: #ffffff; /* Explicit background for container */
+        }
+
+        /* --- Heading and Sphere Styles --- */
+        .heading-with-leaves { /* Keeping class name as requested */
+            position: relative;
+            /* margin-bottom: 0.8em; /* Adjust if needed */
+        }
+
+        h2 {
+            color: #006400; /* Darker green */
+            font-size: 1.3em;
+            margin-top: 2em; /* Space above headings */
+            margin-bottom: 0.8em; /* Space below heading before content */
+            border-bottom: 1px dashed #666; /* Slightly darker dashed line */
+            padding-bottom: 5px;
+            font-weight: 600; /* Slightly bolder for clarity with sans-serif */
+            position: relative; /* Ensure heading text is above spheres if z-index issues */
+            z-index: 1;
+            background-color: transparent; /* Keep background transparent */
+        }
+
+        .swaying-leaf { /* Keeping class name as requested */
+            position: absolute;
+            z-index: 0; /* Behind heading text/border */
+            pointer-events: none; /* Don't interfere with mouse */
+            transform-origin: bottom center; /* Rotate around the base */
+            animation-name: gentle-sway;
+            animation-duration: 8s; /* Base duration */
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+        }
+
+        /* Positioning and variation for individual spheres */
+        .leaf-1 {
+            top: -8px;
+            left: -15px;
+            width: 20px;
+            height: 20px;
+            animation-duration: 7.5s;
+            animation-delay: -1s;
+        }
+
+        .leaf-2 {
+            top: 15px;
+            right: -10px;
+            width: 18px;
+            height: 18px;
+            animation-duration: 9s;
+            animation-delay: -3s;
+        }
+
+         .leaf-3 {
+             bottom: -18px;
+             left: 30%;
+             width: 22px;
+             height: 22px;
+             transform-origin: top center;
+             animation-duration: 8.2s;
+             animation-delay: -0.5s;
+         }
+
+
+        /* Keyframes for the gentle sway */
+        @keyframes gentle-sway {
+            0% {
+                transform: rotate(-4deg);
+            }
+            100% {
+                transform: rotate(4deg);
+            }
+        }
+         /* --- End Sphere Styles --- */
+
+
+        p {
+            margin-bottom: 1.2em; /* Space between paragraphs */
+            text-align: left; /* Left-align is often more readable than justify */
+        }
+        strong, b { /* Style bold text if needed */
+             color: #000000; /* Black, inherit or explicit */
+             font-weight: 600; /* Consistent bold weight */
+        }
+
+        /* --- Cursor Trail Styles --- */
+        .cursor-trail-sphere {
+            position: fixed; /* Position relative to viewport */
+            width: 12px;      /* Size of the trail sphere */
+            height: 12px;
+            /* Using a more visible green temporarily for debugging, change back if needed */
+            /* background-color: rgba(34, 139, 34, 0.15); */
+            background-color: rgba(0, 100, 0, 0.25); /* Darker Green, slightly less transparent */
+            border-radius: 50%;
+            pointer-events: none; /* Prevent interaction */
+            z-index: 9999;      /* Ensure it's on top */
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease-out; /* Smooth fade and shrink, adjusted timing function */
+            transform: scale(1) translate(-50%, -50%); /* Center using translate */
+            opacity: 1; /* Start visible */
+            left: 0; /* Initialize */
+            top: 0; /* Initialize */
+            will-change: transform, opacity; /* Hint for performance */
+        }
+
+        /* State for fading out */
+        .cursor-trail-sphere.fading-out {
+            transform: scale(0) translate(-50%, -50%); /* Scale down while keeping centered */
+            opacity: 0;
+        }
+        /* --- End Cursor Trail Styles --- */
+
+
+        /* Responsive adjustments */
+        @media (max-width: 850px) {
+            .container {
+                max-width: 95%;
+                margin: 10px auto;
+                padding: 10px 15px;
+                border-left: none; /* Remove side borders on mobile */
+                border-right: none;
+            }
+            body {
+                 font-size: 14px;
+            }
+        }
+         @media (max-width: 480px) {
+             body {
+                 font-size: 13px;
+             }
+              h2 {
+                  font-size: 1.2em;
+              }
+              /* Responsive sphere adjustments */
+               .swaying-leaf {
+                   /* display: none; /* Uncomment to hide */
+                   transform: scale(0.8);
+               }
+               /* Adjust positions for smaller size/layout */
+               .leaf-1 { top: -6px; left: -10px; }
+               .leaf-2 { top: 12px; right: -6px;}
+               .leaf-3 { bottom: -14px; left: 20%;}
+
+               /* Optionally make trail spheres smaller on mobile */
+               .cursor-trail-sphere {
+                   width: 8px;
+                   height: 8px;
+               }
+         }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="heading-with-leaves">
+            <h2>About This Project</h2>
+            <!-- Sphere 1 -->
+            <svg class="swaying-leaf leaf-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+                <circle cx="25" cy="25" r="22" fill="#006400" />
+            </svg>
+            <!-- Sphere 2 -->
+            <svg class="swaying-leaf leaf-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+                <circle cx="25" cy="25" r="22" fill="#228B22" />
+            </svg>
+            <!-- Sphere 3 -->
+            <svg class="swaying-leaf leaf-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+               <circle cx="25" cy="25" r="22" fill="#007500" />
+            </svg>
+        </div>
+        <p>
+        This is a digital terrarium. It simulates evolution in a tiny, sealed world that doesn't know you're watching.
+        </p>
+        <p>
+        You can tweak the rules. Add more mutation. Speed up time. Trigger disasters. See what survives. See what doesn't.
+        </p>
+        <p>
+        It's not a game. There's nothing to win. It's not a science tool either, though it borrows the bones of one.
+        </p>
+        <p>
+        Call it a mesocosm if you want. A middle-world. Something that lives between the petri dish and the real thing. Built to help humans and AIs think together without stepping on each other's toes.
+        </p>
+        <p>
+        Mostly, it's just life. Struggling forward. Dying off. Looping weirdly. Writing a kind of poem in data and dirt.
+        </p>
+        <p>
+        Every time you hit "start," it forgets the last run. There are no save files. No legacy. Just a new ecology, each time. Sometimes it thrives. Sometimes it doesn't even get started. Sometimes it ends in a slow, confused spiral where everything adapts just enough to be completely unfit.
+        </p>
+        <p>
+        The sliders are there to let you intervene. Think of them like weather gods or ancient forces. You can change how fast time moves, how much the world changes, how likely something is to get weird when it reproduces. The system doesn't know you're doing this. But it reacts.
+        </p>
+        <p>
+        Eventually you'll start to notice things. Populations that boom too fast and burn out. Tiny shifts that ripple for a hundred turns. A strange fondness for certain genomes.
+        </p>
+        <p>
+        It's not designed to tell you what it means. That's your job. Or your AI's job. Or the job of the next thing that tries to read this moment, and finds only a glitchy sun and a flickering bar of myth at the top of the screen.
+        </p>
+        <p>
+        There are stories here. But they don't live in the code. They live in the watching.
+        </p>
+
+        <div class="heading-with-leaves">
+            <h2>Core Simulation Mechanics</h2>
+            <!-- Sphere 1 -->
+            <svg class="swaying-leaf leaf-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+                <circle cx="25" cy="25" r="22" fill="#006400" />
+            </svg>
+            <!-- Sphere 2 -->
+            <svg class="swaying-leaf leaf-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+                <circle cx="25" cy="25" r="22" fill="#228B22" />
+            </svg>
+            <!-- Sphere 3 -->
+            <svg class="swaying-leaf leaf-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+               <circle cx="25" cy="25" r="22" fill="#007500" />
+            </svg>
+        </div>
+        <p>
+        This little world runs on a few simple levers. They're not complicated. But the way they tangle together can be.
+        </p>
+        <p>
+        You're not programming anything here. You're just nudging the weather. Poking the rules. Seeing what unfolds when the conditions shift.
+        </p>
+        <p>
+        Here's what you're playing with:
+        </p>
+        <p>
+        <strong>Population & Fitness</strong><br>
+        Everything in the terrarium has a genome. That genome gives it a phenotype. That phenotype tells us how good it is at staying alive, eating, reproducing, not dying. Fitness is a score, not a value judgment. It just says, "Are you built for this world, right now?"
+        </p>
+        <p>
+        The better the fit, the longer they live, and the more likely they are to reproduce. But what counts as "fit” depends on where in the environmental cycle you are. That changes. So the goalposts move. Constantly.
+        </p>
+        <p>
+        <strong>Succession Speed</strong><br>
+        This is the pace of ecological change. Environments move through stages, just like real ecosystems do: bare dirt to scrubland to forest to wetland, and so on.
+        </p>
+        <p>
+        A fast succession means the world keeps shifting under your feet. A slow one lets things settle and specialize.
+        </p>
+        <p>
+        Turn it up and you'll see chaos. Turn it down and you'll see entrenchment. Either way, something eventually snaps.
+        </p>
+        <p>
+        <strong>Mutation Rate</strong><br>
+        How likely it is that offspring will be a little different from their parent. Too high, and nothing stabilizes. Too low, and nothing adapts.
+        </p>
+        <p>
+        Mutation drives variety. Variety gives evolution something to work with. No mutation means no new ideas. Just the same shape over and over, until it fails.
+        </p>
+        <p>
+        <strong>Disturbance Rate</strong><br>
+        The frequency of random ecological shocks. Fires, floods, culling events. The world flexing, breaking, resetting.
+        </p>
+        <p>
+        These keep things from getting too comfortable. They punish over-specialization. They also, sometimes, make room for something weird and new to take root.
+        </p>
+
+        <div class="heading-with-leaves">
+            <h2>Entropy Tracker</h2>
+            <!-- Sphere 1 -->
+            <svg class="swaying-leaf leaf-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+                <circle cx="25" cy="25" r="22" fill="#006400" />
+            </svg>
+            <!-- Sphere 2 -->
+            <svg class="swaying-leaf leaf-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+                <circle cx="25" cy="25" r="22" fill="#228B22" />
+            </svg>
+            <!-- Sphere 3 -->
+            <svg class="swaying-leaf leaf-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+               <circle cx="25" cy="25" r="22" fill="#007500" />
+            </svg>
+        </div>
+        <p>
+        If you switch this on, the system will track how diverse the gene pool is. Higher entropy means more variation. Lower entropy means sameness.
+        </p>
+        <p>
+        Entropy isn't good or bad. But it tells you something. When entropy drops too low, the system gets brittle. When it spikes, you might be watching a burst of wild experimentation—or the start of a crash.
+        </p>
+        <p>
+        All of these sliders interact. That's where the real story is. Not in what each setting does by itself, but in how they echo and collide.
+        </p>
+        <p>
+        <strong>The Evolutionary Feedback Loops</strong><br>
+        Here's where things start to breathe.
+        </p>
+        <p>
+        You've got your sliders. You've got your organisms, doing their thing. But what really matters is how those things start bouncing off each other. That's where the loops begin.
+        </p>
+        <p>
+        <strong>Mutation fuels diversity.</strong> Diversity shifts the range of traits in play. That shifts what's possible, what's likely, and what survives. Over time, high mutation can lead to unexpected forms. Or just noise.
+        </p>
+        <p>
+        <strong>Diversity affects fitness.</strong> If too many forms are too weird, none of them fit the current environment. But some might land in the sweet spot. Fitness isn't guaranteed. It's luck and timing and how well your genome dances with the current zone.
+        </p>
+        <p>
+        <strong>Fitness drives population.</strong> If you're good at surviving, you reproduce. That shape gets copied. A lot. Until it starts to choke everything else out.
+        </p>
+        <p>
+        <strong>But entropy notices.</strong> When too many organisms are too similar, entropy drops. The gene pool becomes a puddle. If the world shifts and that one dominant form no longer fits? That's a mass extinction waiting to happen.
+        </p>
+        <p>
+        <strong>Trait lock-in can be a trap.</strong> Systems can get stuck. Traits that were once adaptive become sacred cows. Nothing mutates away from them. When the environment flips, those once-perfect traits become dead weight.
+        </p>
+        <p>
+        <strong>Disturbance breaks the spell.</strong> It shakes up stable systems. It forces adaptation. Or annihilation. Either way, it clears the board.
+        </p>
+        <p>
+        <strong>Focus matters.</strong> Every organism leans toward Efficiency, Mobility, or Resilience. These traits compete and collaborate. Zones favor different ones. Populations can drift toward a dominant strategy—or fragment into niches.
+        </p>
+        <p>
+        <strong>PEFF (Phenotypic Environmental Filtering Factor) quietly rewrites the rules.</strong> If everyone adapts the same way, the environment starts shifting to meet them. It's not fair. It's not balanced. It's just co-evolution, happening in slow motion. means the environment isn't totally fixed—it can <em>bend</em> a little toward what's surviving. It's a slow feedback loop. If most of your population is out of sync with what the current zone “wants,” the zone starts nudging its expectations closer to the dominant traits.
+        </p>
+        <p>
+        It's a way of saying: organisms don't just adapt to environments—environments also adapt to organisms.
+        </p>
+        <p>
+        At low PEFF, the world holds steady and forces compliance.
+        At high PEFF, the world gets pulled toward the survivors.
+        </p>
+        <p>
+        In practice, that can lead to strange harmonies. Or runaway feedback. Or unexpected recoveries after apparent collapse.
+        </p>
+        <p>
+        It's a kind of ecological memory, but without sentiment.
+        </p>
+        <p>
+        None of this happens in isolation. The loops overlap. They reinforce. They sabotage. The beauty here isn't in control. It's in watching complexity unfold, one awkward, glorious turn at a time.
+        </p>
+
+        <div class="heading-with-leaves">
+            <h2>The Mythographic Story Bar</h2>
+            <!-- Sphere 1 -->
+            <svg class="swaying-leaf leaf-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+                <circle cx="25" cy="25" r="22" fill="#006400" />
+            </svg>
+            <!-- Sphere 2 -->
+            <svg class="swaying-leaf leaf-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+                <circle cx="25" cy="25" r="22" fill="#228B22" />
+            </svg>
+            <!-- Sphere 3 -->
+            <svg class="swaying-leaf leaf-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+               <circle cx="25" cy="25" r="22" fill="#007500" />
+            </svg>
+        </div>
+        <p>
+        That strip at the top? That's the story bar. It's alive. It shifts with the sim. And it's trying to show you something.
+        </p>
+        <p>
+        The goal here isn't accuracy. It's feeling. The bar takes raw system data and turns it into symbols—sun, moon, clouds, lightning, static, seasonal tints. Think of it as a kind of ecological weather report, broadcast in metaphor.
+        </p>
+        <p>
+        You don't need to read it to run the sim. But once you know what it's saying, you'll start seeing patterns before the numbers even shift.
+        </p>
+        <p>
+        So what's it actually doing?
+        </p>
+        <p>
+        <strong>The Sun</strong> Represents <em>average population fitness</em>. If fitness is high, the sun is bright and sharp. If fitness is low, the sun dims and shrinks. It's a visual pulse of how well life is doing overall.
+        </p>
+        <p>
+        A strong sun means the system is thriving. A pale one? Things are fragile.
+        </p>
+        <p>
+        <strong>The Moon</strong> Tracks <em>entropy change</em> over the past few cycles. If entropy (diversity) is rising quickly, the moon appears full—waxing. If it's dropping fast, you get a waning crescent. If nothing much is changing, the moon disappears entirely.
+        </p>
+        <p>
+        The moon doesn't care about outcomes. It only cares about <em>change</em>.
+        </p>
+        <p>
+        <strong>The Clouds</strong> Tied to <em>succession speed</em>. More speed? More clouds, moving faster. A stable world will have lazy drift or clear skies. A world in constant motion fills up fast.
+        </p>
+        <p>
+        <strong>Wind Lines and Lightning</strong> Both map to <em>disturbance rate</em>. High disturbance? You'll see wind gusts and the occasional flash—random events jolting the system.
+        </p>
+        <p>
+        Lightning sometimes strikes during culls. It's not symbolic. It's rude.
+        </p>
+        <p>
+        <strong>Stars</strong> Only appear when <em>mutation rate</em> is high. They're little sparks of potential. Or noise. Or cosmic static.
+        </p>
+        <p>
+        <strong>Seasonal Tints</strong> These are subtle overlays based on <em>turn count</em>. Spring starts soft. Summer warms. Autumn gets purple and strange. Winter dulls things out.
+        </p>
+        <p>
+        They don't change the sim. But they set a rhythm. A reminder that time is passing.
+        </p>
+        <p>
+        <strong>Why build this?</strong> Because sometimes graphs lie. Or hide. Or overwhelm. This bar gives you a gut-check. A way to <em>feel</em> when something's off, or blooming, or spiraling.
+        </p>
+        <p>
+        It's a glyph. A seasonal strip of motion and color. A way for systems to speak symbolically. A soft mythos stitched on top of hard mechanics.
+        </p>
+
+        <div class="heading-with-leaves">
+            <h2>Fragility, Vibe Coding, and You</h2>
+            <!-- Sphere 1 -->
+            <svg class="swaying-leaf leaf-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+                <circle cx="25" cy="25" r="22" fill="#006400" />
+            </svg>
+            <!-- Sphere 2 -->
+            <svg class="swaying-leaf leaf-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+                <circle cx="25" cy="25" r="22" fill="#228B22" />
+            </svg>
+            <!-- Sphere 3 -->
+            <svg class="swaying-leaf leaf-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true">
+               <circle cx="25" cy="25" r="22" fill="#007500" />
+            </svg>
+        </div>
+        <p>
+        It doesn't tell you what to think. But it lets you start <em>reading</em> the simulation. And once you start doing that, it gets harder to stop.
+        </p>
+        <p>
+        <strong>This system is fragile.</strong>
+        </p>
+        <p>
+        Not in the broken sense. In the real sense. The sense that ecosystems are always one change away from collapse, and simulations aren't much different.
+        </p>
+        <p>
+        You can start it. You can stop it. But you can't pause it. Once time flows, it flows. When you stop the sim, everything resets. That's the cost of a simple system. It remembers nothing on its own.
+        </p>
+        <p>
+        But you can save the end state. After a run finishes, you'll get the chance to export a summary. That's your moment of reflection. The system doesn't interpret it for you—it just hands you the bones. It's up to you (or your AI) to do the reading.
+        </p>
+        <p>
+        This makes the sim a kind of conversation piece. You run it, stop it, talk about what happened. Maybe with someone else. Maybe with a model. Maybe with yourself.
+        </p>
+        <p>
+        <strong>This is Vibe Coding</strong>
+        </p>
+        <p>
+        You don't need to be a programmer to change this thing. You just need to learn how to nudge.
+        </p>
+        <p>
+        Search for how to run HTML files locally. Open this one in a browser. Then open it in a text editor. Look for the sliders. Look for the presets. Try adjusting a number. Save. Reload. See what breaks. See what blooms.
+        </p>
+        <p>
+        That's it. That's vibe coding.
+        </p>
+        <p>
+        You don't need to understand every line. You just need to experiment. You're not building an app. You're sculpting a weather system.
+        </p>
+        <p>
+        And if you've got a large language model handy? Ask it what a line does. Ask it how to make the sun bigger. Ask it how to add a new trait. Then test it. See what happens.
+        </p>
+        <p>
+        You can even feed it the exported report. Or the whole HTML file. It'll read it like a book. Ask it to explain what happened, what it sees. Ask it to help you tune the next run. These tools weren't just made to <em>run</em> things. They were made to <em>play</em>.
+        </p>
+        <p>
+        The point is: this system was built from curiosity, not mastery. You can do the same. Vibe coding is about co-making with tools that don't need you to be perfect. Just intentional.
+        </p>
+        <p>
+        So go ahead. Break it. Fork it. Recolor the whole thing. Add new logic. Or don't. Just watch it run. That's a form of making too.
+        </p>
+    </div>
+
+    <script>
+        const body = document.body;
+        // Throttling parameters (adjust if needed)
+        let canCreateSphere = true;
+        const throttleTime = 30; // Milliseconds between sphere creation (reduced slightly)
+
+        function createTrailSphere(x, y) {
+            // Apply throttling
+            if (!canCreateSphere) return;
+            canCreateSphere = false;
+            setTimeout(() => {
+                canCreateSphere = true;
+            }, throttleTime);
+
+            // console.log(`Creating sphere at: ${x}, ${y}`); // Uncomment for debugging
+
+            const sphere = document.createElement('div');
+            sphere.className = 'cursor-trail-sphere';
+
+            // Set initial position using top/left
+            // The translate(-50%, -50%) in CSS handles centering
+            sphere.style.left = `${x}px`;
+            sphere.style.top = `${y}px`;
+
+            body.appendChild(sphere);
+            // console.log('Sphere appended to body'); // Uncomment for debugging
+
+            // Use requestAnimationFrame to ensure the element is rendered
+            // before adding the class that triggers the fade-out transition.
+            requestAnimationFrame(() => {
+                // A nested rAF can sometimes help ensure the transition class is applied *after* initial render.
+                requestAnimationFrame(() => {
+                     sphere.classList.add('fading-out');
+                     // console.log('fading-out class added'); // Uncomment for debugging
+                });
+            });
+
+            // Remove the sphere from the DOM after the animation completes
+            const animationDuration = 800; // Match CSS transition duration
+            setTimeout(() => {
+                // Check if the sphere still exists and has a parent before removing
+                if (sphere && sphere.parentNode) {
+                   sphere.remove();
+                   // console.log('Sphere removed'); // Uncomment for debugging
+                }
+            }, animationDuration);
+        }
+
+        // Listener for mouse movement
+        document.addEventListener('mousemove', (e) => {
+            createTrailSphere(e.clientX, e.clientY);
+        }, { passive: true }); // Use passive listener
+
+        // Listener for touch movement
+        document.addEventListener('touchmove', (e) => {
+            // Handle multiple touches gracefully by using the first touch point
+            if (e.touches.length > 0) {
+                const touch = e.touches[0];
+                createTrailSphere(touch.clientX, touch.clientY);
+            }
+        }, { passive: true }); // Use passive listener for better scroll performance
+
+    </script>
+</body>
+</html>
