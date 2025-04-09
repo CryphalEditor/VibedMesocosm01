@@ -528,19 +528,3 @@
 
 </body>
 </html>
-```
-
-**Summary of Changes Made:**
-
-1.  **Patch Note:** Added `<!-- Patch: v10.2 - Smaller About btn, updated title/tagline, +/- toggle icon for Story, tooltip review pass. -->` at the top.
-2.  **Title:** Updated `<title>` and `<h1>` to "Terrarium Zero - Version 10.2".
-3.  **Tagline:** Updated `<p class="description">` content.
-4.  **About Button:** Ensured the smaller CSS style block for `#aboutButton` provided previously is used.
-5.  **+/- Toggle:**
-    *   Added `<span class="toggle-icon">[-]</span>` within the `<summary>` of the Story Mode panel.
-    *   Added CSS for `.toggle-icon`.
-    *   Added JavaScript within the `DOMContentLoaded` listener to update the icon text based on the `details` element's `open` state.
-6.  **Tooltips:** Reviewed and added/updated `title` attributes for various elements, including panel containers (`#story-mode-panel`, `#controls`, etc.), `details`/`summary` tags, control groups, canvases, legends, log containers, and key data spans, aiming for comprehensive coverage. Minor improvements were made to existing tooltips for clarity where applicable.
-7.  **Version Logging:** Updated the initial console log and the System log message during initialization to reflect v10.2.
-
-The core simulation logic remains identical to the previous version (9.8 / 10.2.html file content). Let me know if you'd like any further adjustments!
